@@ -1,0 +1,6 @@
+# Vocabulary Properties
+uuid = cdb2aed7-1b15-4305-87d9-14c59ac02d3e
+
+# sample.RESJSEExecution
+sample.RESJSEExecution#concept.label = RESJSEExecution
+sample.RESJSEExecution.executeRuleset(java.lang.String,loan.Borrower,loan.LoanRequest)#phrase.action = Using {this} execute ruleset of {0} with {1} and {2}

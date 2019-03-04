@@ -1,0 +1,21 @@
+
+property loadGetterSetterAsProperties "true"
+property origin "xom:/Loan Validation Base//jse_decision_service"
+property uuid "2c0277e5-a8dc-4a77-9963-378029a08b18"
+package sample;
+
+
+public class RESJSEExecution
+{
+    public RESJSEExecution();
+    public void executeRuleset(ilog.rules.res.model.IlrPath arg)
+                throws ilog.rules.res.model.IlrFormatException, ilog.rules.res.session.IlrSessionCreationException, ilog.rules.res.session.IlrSessionException;
+    public void executeRuleset(string arg1, loan.Borrower arg2, loan.LoanRequest arg3)
+                throws ilog.rules.res.model.IlrFormatException, ilog.rules.res.session.IlrSessionCreationException, ilog.rules.res.session.IlrSessionException;
+    public void executeRulesetWithAmount(ilog.rules.res.model.IlrPath arg1, int arg2)
+                throws ilog.rules.res.model.IlrFormatException, ilog.rules.res.session.IlrSessionCreationException, ilog.rules.res.session.IlrSessionException;
+    public void loadRuleApp(string arg)
+                throws ilog.rules.res.session.IlrSessionCreationException, ilog.rules.res.session.IlrSessionException, java.io.IOException, ilog.rules.res.model.archive.IlrArchiveException, ilog.rules.res.model.IlrAlreadyExistException, ilog.rules.res.model.IlrFormatException;
+    public void release();
+}
+

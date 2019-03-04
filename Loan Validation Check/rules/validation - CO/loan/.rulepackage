@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model.base:RulePackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:model.base="http://ilog.rules.studio/model/base.ecore">
+  <name>loan</name>
+  <uuid>d0973d5e-45da-4468-b9cb-3b46ac8dd0cd</uuid>
+</model.base:RulePackage>
