@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Licensed Materials - Property of IBM                           -->
+<!-- 5725-B69 5655-Y17 5655-Y31 5724-X98 5724-Y15 5655-V82                                     -->
+<!-- Copyright IBM Corp. 1987, 2018. All Rights Reserved            -->
+<!-- US Government Users Restricted Rights - Use, duplication or    -->
+<!-- disclosure restricted by GSA ADP Schedule Contract with        -->
+<!-- IBM Corp.                                                      -->
+
+
+<project name="Java SE Execution of Decision Service" default="build" basedir=".">
+
+	<description>How to Use a Rule Session in J2SE</description>
+
+	<property name="ds.home" location="${basedir}/../../.." />
+	<property name="executionserver.home" value="${ds.home}/executionserver"/>
+	<import file="${executionserver.home}/lib/classpath-executionserver.xml"/>
+
+	<!-- initialize property variable -->
+	<target name="init">
+		<tstamp/>
+		<!-- build -->
+		<property name="src.dir" location="src"/>
+		<property name="classes.dir" location="build"/>
+		<property name="studio.home" value="${ds.home}/studio" />
+		<property name="loanvalidation-workspace.dir" location="${basedir}/workspace" />
+		<property name="loanvalidation-xom.dir" location="${loanvalidation-workspace.dir}/loan-validation-xom" />
+		<property name="loanvalidation-service.dir" location="${loanvalidation-workspace.dir}/Loan Validation Service" />
+		<property name="lib.dir" location="${basedir}/lib" />
+ 		<!-- classpath to compile the sample -->
+		<path id="compile.classpath">
+			<pathelement location="${classes.dir}"/>
+			<pathelement location="."/>
+			<fileset dir="${executionserver.home}/lib">
+				<include name="junit-*.jar"/>
+				<include name="httpclient*.jar"/>
+				<include name="jackson-annotations-2.9*.jar"/>
+				<include name="jackson-databind-2.9*.jar"/>
+				<include name="jrules-res-execution.jar"/>
+				<include name="jrules-engine*.jar"/>
+				<include name="j2ee_connector-1_5-fr*.jar"/>
+			</fileset>
+			<fileset dir="${lib.dir}">
+				<include name="loanvalidation-xom.jar"/>
+			</fileset>
+		</path>
+		<!-- classpath to execute the sample -->
+		<path id="execution.classpath">
+		  <path refid="compile.classpath" />
+		  <pathelement location="${classes.dir}"/>
+		  <pathelement location="${lib.dir}"/>
+		</path>
+	</target>
+	
+	<!-- B U I L D -->
+    <target name="build.loan.loanvalidation.xom" depends="init">
+    	<mkdir dir="${lib.dir}" />
+
+		<mkdir dir="${loanvalidation-workspace.dir}" />
+        <copy todir="${loanvalidation-workspace.dir}">
+            <fileset dir="${studio.home}/tutorials/decisionservice/answer/" />
+        </copy>
+		<mkdir dir="${loanvalidation-xom.dir}/classes" />
+		
+       <javac includeantruntime="false" srcdir="${loanvalidation-xom.dir}/src" destdir="${loanvalidation-xom.dir}/classes" nowarn="true" source="1.8" target="1.8"  debug="true" fork="true" />
+	   <copy todir="${loanvalidation-xom.dir}/classes">
+			<fileset dir="${loanvalidation-xom.dir}/src" includes="**/*.properties"/>
+        </copy>
+        <jar destfile="${lib.dir}/loanvalidation-xom.jar">
+            <fileset dir="${loanvalidation-xom.dir}/classes">
+            </fileset>
+        </jar>
+   </target>
+   
+   
+	
+	<!-- Compile classes -->
+	<target name="build" description="Build all classes" depends="init,clean,build.loan.loanvalidation.xom">
+		<echo message="Compiling Sample code"/>
+		<mkdir dir="${classes.dir}"/>
+		<javac includeantruntime="false" srcdir="${src.dir}" destdir="${classes.dir}"  nowarn="true" source="1.8" target="1.8" verbose="off" debug="on" fork="true">
+			<classpath refid="compile.classpath"/>
+		</javac>
+		<copy todir="${classes.dir}">
+			<fileset dir="src/main/resources"
+					 includes="**/*.jar,**/*.properties" />
+		</copy>
+		<copy todir="${classes.dir}">
+			<fileset dir="src/main/i18n"
+					 includes="**/*.jar,**/*.properties" />
+		</copy>
+	</target>
+	
+	<!-- Check build command is installed -->
+	<target name="checkBuildCommandInstalled">
+		<available file="${ds.home}/buildcommand/rules-compiler/rules-compiler.jar" type="file" property="buildCommandInstalled"/>
+	</target>	
+	
+	<target name="abortIfNoBuildCommand" depends="checkBuildCommandInstalled" unless="buildCommandInstalled">
+		<fail message="Install Build Command feature to run this sample"/>
+	</target>
+	
+	<!-- Use build command to build the decision service ruleapp -->
+	<target name="generate.ruleapp" depends="init, build, abortIfNoBuildCommand" description="Generate the ruleapp">
+		<!-- Build the ruleapp with build command -->
+		<java jar="${ds.home}/buildcommand/rules-compiler/rules-compiler.jar" fork="true">	  
+		    <arg line="-config ${basedir}/test_deployment.properties"/>	  	
+		</java>		
+	</target>	
+	
+	
+	
+	<!-- Use test class to execute the decision service in Java SE environment -->
+	<target name="execute" depends="init" description="Execute the Decision Service in Java SE runtime">
+		<!-- Build the ruleapp with build command -->
+		 <java classname="sample.SampleClient" fork="true">
+            <classpath>
+                <pathelement location="${classes.dir}" />
+            </classpath>
+            <classpath refid="execution.classpath" />
+			<arg value="-rulesetPath"/>
+			<arg value="/test_deployment/loan_validation_with_score_and_grade"/>
+        </java>		
+	</target>	
+	
+	<!-- Use test class to execute the decision service in Java SE environment -->
+	<target name="execute.small.loan" depends="init" description="Execute the Decision Service in Java SE runtime with accepted loan">
+		<!-- Build the ruleapp with build command -->
+		 <java classname="sample.SampleClient" fork="true">
+            <classpath>
+                <pathelement location="${classes.dir}" />
+            </classpath>
+            <classpath refid="execution.classpath" />
+			<arg value="-loanAmount"/>
+			<arg value="10000"/>
+			<arg value="-rulesetPath"/>
+			<arg value="/test_deployment/loan_validation_with_score_and_grade"/>
+        </java>		
+	</target>		
+
+	<!-- Clean -->
+	<target name="clean" depends="init"  description="Delete the compiled decision service">
+		<delete failonerror="false"  dir="${classes.dir}" />
+	  	<delete failonerror="false"  dir="${loanvalidation-workspace.dir}" />
+		<delete failonerror="false"  dir="${lib.dir}" />
+	</target>
+
+</project>
+

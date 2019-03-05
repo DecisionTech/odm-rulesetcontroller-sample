@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!-- Licensed Materials - Property of IBM                           -->
+<!-- 5725-B69 5655-Y17 5655-Y31 5724-X98 5724-Y15 5655-V82                                     -->
+<!-- Copyright IBM Corp. 1987, 2018. All Rights Reserved            -->
+<!-- US Government Users Restricted Rights - Use, duplication or    -->
+<!-- disclosure restricted by GSA ADP Schedule Contract with        -->
+<!-- IBM Corp.                                                      -->
+<item>
+  <name>answer</name> 
+  <description/> 
+  <label>Creating a decision service with multiple projects</label> 
+  <module>studio</module>
+   <virtualpath>%studio/%tutorials/%name/%answer</virtualpath>   
+  <projects>
+    <local name="Loan Validation Base"/>
+    <local name="Loan Validation Check"/>
+    <local name="Loan Validation Determination"/>
+    <local name="Loan Validation Scoring"/>
+    <local name="Loan Validation Service"/>
+    <shared name="loan-validation-xom"/>
+  </projects>
+   <nocommands/>
+</item>
